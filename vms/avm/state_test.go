@@ -95,12 +95,18 @@ func TestStateIDs(t *testing.T) {
 	if err == nil {
 		t.Fatalf("Should have errored during cache lookup")
 	}
+	if result != nil {
+		t.Fatalf("Should have returned nil result")
+	}
 
 	state.Cache.Flush()
 
 	result, err = state.IDs(ids.Empty)
 	if err == nil {
 		t.Fatalf("Should have errored during parsing")
+	}
+	if result != nil {
+		t.Fatalf("Should have returned nil result")
 	}
 
 	statusResult, err := state.Status(ids.Empty)

@@ -82,7 +82,7 @@ func (w *Wallet) Send(amount uint64, locktime uint64, destAddr ids.ShortID) *spd
 	currentTime := w.clock.Unix()
 
 	// Send any change to an address this wallet controls
-	changeAddr := ids.ShortID{}
+	var changeAddr ids.ShortID
 	if w.keychain.Addrs.Len() < 1000 {
 		changeAddr = w.CreateAddress()
 	} else {

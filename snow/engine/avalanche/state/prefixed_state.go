@@ -40,7 +40,7 @@ func (s *prefixedState) UniqueVertex(vtx *uniqueVertex) *uniqueVertex {
 }
 
 func (s *prefixedState) Vertex(id ids.ID) *vertex {
-	vID := ids.ID{}
+	var vID ids.ID
 	if cachedVtxIDIntf, found := s.vtx.Get(id); found {
 		vID = cachedVtxIDIntf.(ids.ID)
 	} else {
@@ -52,7 +52,7 @@ func (s *prefixedState) Vertex(id ids.ID) *vertex {
 }
 
 func (s *prefixedState) SetVertex(vtx *vertex) {
-	vID := ids.ID{}
+	var vID ids.ID
 	if cachedVtxIDIntf, found := s.vtx.Get(vtx.id); found {
 		vID = cachedVtxIDIntf.(ids.ID)
 	} else {
@@ -64,7 +64,7 @@ func (s *prefixedState) SetVertex(vtx *vertex) {
 }
 
 func (s *prefixedState) Status(id ids.ID) choices.Status {
-	sID := ids.ID{}
+	var sID ids.ID
 	if cachedStatusIDIntf, found := s.status.Get(id); found {
 		sID = cachedStatusIDIntf.(ids.ID)
 	} else {
@@ -76,7 +76,7 @@ func (s *prefixedState) Status(id ids.ID) choices.Status {
 }
 
 func (s *prefixedState) SetStatus(id ids.ID, status choices.Status) {
-	sID := ids.ID{}
+	var sID ids.ID
 	if cachedStatusIDIntf, found := s.status.Get(id); found {
 		sID = cachedStatusIDIntf.(ids.ID)
 	} else {

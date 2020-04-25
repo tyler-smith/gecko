@@ -159,7 +159,7 @@ func (t *Tx) verifyOuts() error {
 func (t *Tx) verifyFunds(txFee uint64) error {
 	inFunds := uint64(0)
 	for _, in := range t.ins {
-		err := error(nil)
+		var err error
 
 		switch i := in.(type) {
 		case *InputPayment:
@@ -174,7 +174,7 @@ func (t *Tx) verifyFunds(txFee uint64) error {
 	}
 	outFunds := uint64(0)
 	for _, out := range t.outs {
-		err := error(nil)
+		var err error
 
 		switch o := out.(type) {
 		case *OutputPayment:

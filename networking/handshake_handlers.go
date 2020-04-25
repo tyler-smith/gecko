@@ -451,7 +451,7 @@ func (nm *Handshake) connectedToPeer(conn *C.struct_peernetwork_conn_t, peer sal
 
 	// If we're enforcing staking, use a peer's certificate to uniquely identify them
 	// Otherwise, use a hash of their ip to identify them
-	cert := ids.ShortID{}
+	var cert ids.ShortID
 	if nm.enableStaking {
 		cert = getPeerCert(conn)
 	} else {

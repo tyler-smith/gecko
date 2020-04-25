@@ -467,6 +467,9 @@ func TestAddNonDefaultSubnetValidatorTxSemanticVerify(t *testing.T) {
 		},
 		testSubnet1.id,
 	)
+	if err != nil {
+		t.Fatal(err)
+	}
 	// Node with ID nodeIDKey.PublicKey().Address() now validating subnet with ID testSubnet1.ID
 
 	tx, err = vm.newAddNonDefaultSubnetValidatorTx(
@@ -496,6 +499,9 @@ func TestAddNonDefaultSubnetValidatorTxSemanticVerify(t *testing.T) {
 		},
 		testSubnet1.id,
 	)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	// Case 9: Too many signatures
 	tx, err = vm.newAddNonDefaultSubnetValidatorTx(
@@ -584,6 +590,9 @@ func TestAddNonDefaultSubnetValidatorTxSemanticVerify(t *testing.T) {
 		},
 		testSubnet1.id,
 	)
+	if err != nil {
+		t.Fatal(err)
+	}
 	// Node with ID nodeIDKey.PublicKey().Address() now pending validator for subnet with ID testSubnet1.ID
 
 	_, _, _, _, err = tx.SemanticVerify(vm.DB)
