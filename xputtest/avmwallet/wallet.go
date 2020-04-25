@@ -178,7 +178,7 @@ func (w *Wallet) CreateTx(assetID ids.ID, amount uint64, destAddr ids.ShortID) (
 
 	ava.SortTransferableInputsWithSigners(ins, keys)
 
-	outs := []*ava.TransferableOutput{&ava.TransferableOutput{
+	outs := []*ava.TransferableOutput{{
 		Asset: ava.Asset{ID: assetID},
 		Out: &secp256k1fx.TransferOutput{
 			Amt:      amount,

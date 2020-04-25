@@ -148,7 +148,7 @@ func (vm *VM) CreateHandlers() map[string]*common.HTTPHandler {
 	newServer.RegisterCodec(codec, "application/json;charset=UTF-8")
 	newServer.RegisterService(&Service{vm: vm}, "spdag") // name this service "spdag"
 	return map[string]*common.HTTPHandler{
-		"": &common.HTTPHandler{Handler: newServer},
+		"": {Handler: newServer},
 	}
 }
 
@@ -162,7 +162,7 @@ func (vm *VM) CreateStaticHandlers() map[string]*common.HTTPHandler {
 	return map[string]*common.HTTPHandler{
 		// NoLock because the static functions probably wont be stateful (i.e. no
 		// write operations)
-		"": &common.HTTPHandler{LockOptions: common.NoLock, Handler: newServer},
+		"": {LockOptions: common.NoLock, Handler: newServer},
 	}
 }
 

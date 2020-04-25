@@ -389,9 +389,9 @@ func TestAddNonDefaultSubnetValidatorTxSemanticVerify(t *testing.T) {
 	}
 
 	tx, err = vm.newAddNonDefaultSubnetValidatorTx(
-		defaultNonce+1,                                          // nonce
-		defaultWeight,                                           // weight
-		uint64(newTimestamp.Unix()),                             // start time
+		defaultNonce+1,              // nonce
+		defaultWeight,               // weight
+		uint64(newTimestamp.Unix()), // start time
 		uint64(newTimestamp.Add(MinimumStakingDuration).Unix()), // end time
 		defaultKey.PublicKey().Address(),                        // node ID
 		testSubnet1.id,                                          // subnet ID
@@ -499,9 +499,9 @@ func TestAddNonDefaultSubnetValidatorTxSemanticVerify(t *testing.T) {
 
 	// Case 9: Too many signatures
 	tx, err = vm.newAddNonDefaultSubnetValidatorTx(
-		defaultNonce+1,                                                  // nonce
-		defaultWeight,                                                   // weight
-		uint64(defaultGenesisTime.Unix()),                               // start time
+		defaultNonce+1,                    // nonce
+		defaultWeight,                     // weight
+		uint64(defaultGenesisTime.Unix()), // start time
 		uint64(defaultGenesisTime.Add(MinimumStakingDuration).Unix())+1, // end time
 		keys[0].PublicKey().Address(),                                   // node ID
 		testSubnet1.id,                                                  // subnet ID
@@ -520,9 +520,9 @@ func TestAddNonDefaultSubnetValidatorTxSemanticVerify(t *testing.T) {
 
 	// Case 10: Too few signatures
 	tx, err = vm.newAddNonDefaultSubnetValidatorTx(
-		defaultNonce+1,                                                // nonce
-		defaultWeight,                                                 // weight
-		uint64(defaultGenesisTime.Unix()),                             // start time
+		defaultNonce+1,                    // nonce
+		defaultWeight,                     // weight
+		uint64(defaultGenesisTime.Unix()), // start time
 		uint64(defaultGenesisTime.Add(MinimumStakingDuration).Unix()), // end time
 		keys[0].PublicKey().Address(),                                 // node ID
 		testSubnet1.id,                                                // subnet ID
@@ -541,9 +541,9 @@ func TestAddNonDefaultSubnetValidatorTxSemanticVerify(t *testing.T) {
 
 	// Case 10: Control Signature from invalid key
 	tx, err = vm.newAddNonDefaultSubnetValidatorTx(
-		defaultNonce+1,                                                // nonce
-		defaultWeight,                                                 // weight
-		uint64(defaultGenesisTime.Unix()),                             // start time
+		defaultNonce+1,                    // nonce
+		defaultWeight,                     // weight
+		uint64(defaultGenesisTime.Unix()), // start time
 		uint64(defaultGenesisTime.Add(MinimumStakingDuration).Unix()), // end time
 		keys[0].PublicKey().Address(),                                 // node ID
 		testSubnet1.id,                                                // subnet ID
@@ -563,9 +563,9 @@ func TestAddNonDefaultSubnetValidatorTxSemanticVerify(t *testing.T) {
 	// Case 11: Proposed validator in pending validator set for subnet
 	// First, add validator to pending validator set of subnet
 	tx, err = vm.newAddNonDefaultSubnetValidatorTx(
-		defaultNonce+1,                                                  // nonce
-		defaultWeight,                                                   // weight
-		uint64(defaultGenesisTime.Unix())+1,                             // start time
+		defaultNonce+1,                      // nonce
+		defaultWeight,                       // weight
+		uint64(defaultGenesisTime.Unix())+1, // start time
 		uint64(defaultGenesisTime.Add(MinimumStakingDuration).Unix())+1, // end time
 		defaultKey.PublicKey().Address(),                                // node ID
 		testSubnet1.id,                                                  // subnet ID

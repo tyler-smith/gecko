@@ -156,7 +156,7 @@ func FromConfig(networkID uint32, config *Config) ([]byte, error) {
 
 	// Specify the chains that exist upon this network's creation
 	platformvmArgs.Chains = []platformvm.APIChain{
-		platformvm.APIChain{
+		{
 			GenesisData: avmReply.Bytes,
 			SubnetID:    platformvm.DefaultSubnetID,
 			VMID:        avm.ID,
@@ -167,25 +167,25 @@ func FromConfig(networkID uint32, config *Config) ([]byte, error) {
 			},
 			Name: "X-Chain",
 		},
-		platformvm.APIChain{
+		{
 			GenesisData: formatting.CB58{Bytes: config.EVMBytes},
 			SubnetID:    platformvm.DefaultSubnetID,
 			VMID:        EVMID,
 			Name:        "C-Chain",
 		},
-		platformvm.APIChain{
+		{
 			GenesisData: spdagvmReply.Bytes,
 			SubnetID:    platformvm.DefaultSubnetID,
 			VMID:        spdagvm.ID,
 			Name:        "Simple DAG Payments",
 		},
-		platformvm.APIChain{
+		{
 			GenesisData: spchainvmReply.Bytes,
 			SubnetID:    platformvm.DefaultSubnetID,
 			VMID:        spchainvm.ID,
 			Name:        "Simple Chain Payments",
 		},
-		platformvm.APIChain{
+		{
 			GenesisData: formatting.CB58{Bytes: []byte{}}, // There is no genesis data
 			SubnetID:    platformvm.DefaultSubnetID,
 			VMID:        timestampvm.ID,

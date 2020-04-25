@@ -1090,7 +1090,7 @@ func TestAtomicImport(t *testing.T) {
 	tx, err := vm.newImportTx(
 		defaultNonce+1,
 		testNetworkID,
-		[]*ava.TransferableInput{&ava.TransferableInput{
+		[]*ava.TransferableInput{{
 			UTXOID: utxoID,
 			Asset:  ava.Asset{ID: assetID},
 			In: &secp256k1fx.TransferInput{
@@ -1098,7 +1098,7 @@ func TestAtomicImport(t *testing.T) {
 				Input: secp256k1fx.Input{SigIndices: []uint32{0}},
 			},
 		}},
-		[][]*crypto.PrivateKeySECP256K1R{[]*crypto.PrivateKeySECP256K1R{key}},
+		[][]*crypto.PrivateKeySECP256K1R{{key}},
 		key,
 	)
 	if err != nil {
@@ -1181,7 +1181,7 @@ func TestOptimisticAtomicImport(t *testing.T) {
 	tx, err := vm.newImportTx(
 		defaultNonce+1,
 		testNetworkID,
-		[]*ava.TransferableInput{&ava.TransferableInput{
+		[]*ava.TransferableInput{{
 			UTXOID: utxoID,
 			Asset:  ava.Asset{ID: assetID},
 			In: &secp256k1fx.TransferInput{
@@ -1189,7 +1189,7 @@ func TestOptimisticAtomicImport(t *testing.T) {
 				Input: secp256k1fx.Input{SigIndices: []uint32{0}},
 			},
 		}},
-		[][]*crypto.PrivateKeySECP256K1R{[]*crypto.PrivateKeySECP256K1R{key}},
+		[][]*crypto.PrivateKeySECP256K1R{{key}},
 		key,
 	)
 	if err != nil {

@@ -111,7 +111,7 @@ func TestStateIDs(t *testing.T) {
 		t.Fatalf("Should have returned the %s status", choices.Accepted)
 	}
 
-	if err := state.SetIDs(ids.Empty, []ids.ID{ids.ID{}}); err == nil {
+	if err := state.SetIDs(ids.Empty, []ids.ID{{}}); err == nil {
 		t.Fatalf("Should have errored during serialization")
 	}
 
@@ -258,7 +258,7 @@ func TestStateTXs(t *testing.T) {
 	tx := &Tx{UnsignedTx: &BaseTx{
 		NetID: networkID,
 		BCID:  chainID,
-		Ins: []*ava.TransferableInput{&ava.TransferableInput{
+		Ins: []*ava.TransferableInput{{
 			UTXOID: ava.UTXOID{
 				TxID:        ids.Empty,
 				OutputIndex: 0,

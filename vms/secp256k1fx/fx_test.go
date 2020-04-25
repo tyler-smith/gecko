@@ -378,7 +378,7 @@ func TestFxVerifyTransferTooManySigners(t *testing.T) {
 	cred := &Credential{
 		Sigs: [][crypto.SECP256K1RSigLen]byte{
 			sigBytes,
-			[crypto.SECP256K1RSigLen]byte{},
+			{},
 		},
 	}
 
@@ -453,7 +453,7 @@ func TestFxVerifyTransferMismatchedSigners(t *testing.T) {
 	cred := &Credential{
 		Sigs: [][crypto.SECP256K1RSigLen]byte{
 			sigBytes,
-			[crypto.SECP256K1RSigLen]byte{},
+			{},
 		},
 	}
 
@@ -491,7 +491,7 @@ func TestFxVerifyTransferInvalidSignature(t *testing.T) {
 	}
 	cred := &Credential{
 		Sigs: [][crypto.SECP256K1RSigLen]byte{
-			[crypto.SECP256K1RSigLen]byte{},
+			{},
 		},
 	}
 

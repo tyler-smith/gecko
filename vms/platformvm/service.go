@@ -617,7 +617,7 @@ func (service *Service) ExportAVA(_ *http.Request, args *ExportAVAArgs, response
 	tx := ExportTx{UnsignedExportTx: UnsignedExportTx{
 		NetworkID: service.vm.Ctx.NetworkID,
 		Nonce:     uint64(args.PayerNonce),
-		Outs: []*ava.TransferableOutput{&ava.TransferableOutput{
+		Outs: []*ava.TransferableOutput{{
 			Asset: ava.Asset{ID: service.vm.ava},
 			Out: &secp256k1fx.TransferOutput{
 				Amt: uint64(args.Amount),
