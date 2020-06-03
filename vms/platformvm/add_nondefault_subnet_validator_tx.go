@@ -23,7 +23,7 @@ var (
 	errDSValidatorSubset       = errors.New("all subnets must be a subset of the default subnet")
 )
 
-// UnsignedAddNonDefaultSubnetValidatorTx is an unsigned addNonDefaultSubnetValidatorTx
+// UnsignedAddNonDefaultSubnetValidatorTx is an unsigned AddNonDefaultSubnetValidatorTx
 type UnsignedAddNonDefaultSubnetValidatorTx struct {
 	vm *VM
 
@@ -57,12 +57,12 @@ func (tx *UnsignedAddNonDefaultSubnetValidatorTx) UnsignedBytes() []byte {
 	return tx.unsignedBytes
 }
 
-// addNonDefaultSubnetValidatorTx is a transaction that, if it is in a ProposeAddValidator block that
+// AddNonDefaultSubnetValidatorTx is a transaction that, if it is in a ProposeAddValidator block that
 // is accepted and followed by a Commit block, adds a validator to the pending validator set of a subnet
 // other than the default subnet.
 // (That is, the validator in the tx will validate at some point in the future.)
 // The transaction fee will be paid from the account whose ID is [Sigs[0].Address()]
-type addNonDefaultSubnetValidatorTx struct {
+type AddNonDefaultSubnetValidatorTx struct {
 	UnsignedAddNonDefaultSubnetValidatorTx `serialize:"true"`
 
 	// Credentials that authorize the inputs to spend the corresponding outputs
@@ -76,7 +76,7 @@ type addNonDefaultSubnetValidatorTx struct {
 }
 
 // initialize [tx]
-func (tx *addNonDefaultSubnetValidatorTx) initialize(vm *VM) error {
+func (tx *AddNonDefaultSubnetValidatorTx) initialize(vm *VM) error {
 	var err error
 	tx.unsignedBytes, err = Codec.Marshal(interface{}(tx.UnsignedAddNonDefaultSubnetValidatorTx))
 	if err != nil {
@@ -84,19 +84,19 @@ func (tx *addNonDefaultSubnetValidatorTx) initialize(vm *VM) error {
 	}
 	tx.bytes, err = Codec.Marshal(tx) // byte representation of the signed transaction
 	if err != nil {
-		fmt.Errorf("couldn't marshal addNonDefaultSubnetValidatorTx: %w", err)
+		fmt.Errorf("couldn't marshal AddNonDefaultSubnetValidatorTx: %w", err)
 	}
 	tx.vm = vm
 	tx.id = ids.NewID(hashing.ComputeHash256Array(tx.bytes))
 	return nil
 }
 
-func (tx *addNonDefaultSubnetValidatorTx) ID() ids.ID { return tx.id }
+func (tx *AddNonDefaultSubnetValidatorTx) ID() ids.ID { return tx.id }
 
 // SyntacticVerify return nil iff [tx] is valid
 // If [tx] is valid, sets [tx.accountID]
 // TODO: only verify once
-func (tx *addNonDefaultSubnetValidatorTx) SyntacticVerify() error {
+func (tx *AddNonDefaultSubnetValidatorTx) SyntacticVerify() error {
 	switch {
 	case tx == nil:
 		return errNilTx
@@ -148,9 +148,9 @@ func (tx *addNonDefaultSubnetValidatorTx) SyntacticVerify() error {
 }
 
 // getDefaultSubnetStaker ...
-func (h *EventHeap) getDefaultSubnetStaker(id ids.ShortID) (*addDefaultSubnetValidatorTx, error) {
+func (h *EventHeap) getDefaultSubnetStaker(id ids.ShortID) (*AddDefaultSubnetValidatorTx, error) {
 	for _, txIntf := range h.Txs {
-		tx, ok := txIntf.(*addDefaultSubnetValidatorTx)
+		tx, ok := txIntf.(*AddDefaultSubnetValidatorTx)
 		if !ok {
 			continue
 		}
@@ -163,7 +163,7 @@ func (h *EventHeap) getDefaultSubnetStaker(id ids.ShortID) (*addDefaultSubnetVal
 }
 
 // SemanticVerify this transaction is valid.
-func (tx *addNonDefaultSubnetValidatorTx) SemanticVerify(db database.Database) (*versiondb.Database, *versiondb.Database, func(), func(), error) {
+func (tx *AddNonDefaultSubnetValidatorTx) SemanticVerify(db database.Database) (*versiondb.Database, *versiondb.Database, func(), func(), error) {
 	// Ensure tx is syntactically valid
 	if err := tx.SyntacticVerify(); err != nil {
 		return nil, nil, nil, nil, err
@@ -311,7 +311,7 @@ func (tx *addNonDefaultSubnetValidatorTx) SemanticVerify(db database.Database) (
 
 // InitiallyPrefersCommit returns true if the proposed validators start time is
 // after the current wall clock time,
-func (tx *addNonDefaultSubnetValidatorTx) InitiallyPrefersCommit() bool {
+func (tx *AddNonDefaultSubnetValidatorTx) InitiallyPrefersCommit() bool {
 	return tx.StartTime().After(tx.vm.clock.Time())
 }
 
@@ -325,8 +325,8 @@ func (vm *VM) newAddNonDefaultSubnetValidatorTx(
 	networkID uint32,
 	controlKeys []*crypto.PrivateKeySECP256K1R,
 	payerKey *crypto.PrivateKeySECP256K1R,
-) (*addNonDefaultSubnetValidatorTx, error) {
-	tx := &addNonDefaultSubnetValidatorTx{
+) (*AddNonDefaultSubnetValidatorTx, error) {
+	tx := &AddNonDefaultSubnetValidatorTx{
 		UnsignedAddNonDefaultSubnetValidatorTx: UnsignedAddNonDefaultSubnetValidatorTx{
 			SubnetValidator: SubnetValidator{
 				DurationValidator: DurationValidator{

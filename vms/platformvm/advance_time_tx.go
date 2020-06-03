@@ -13,29 +13,29 @@ import (
 	"github.com/ava-labs/gecko/database/versiondb"
 )
 
-// advanceTimeTx is a transaction to increase the chain's timestamp.
+// AdvanceTimeTx is a transaction to increase the chain's timestamp.
 // When the chain's timestamp is updated (a AdvanceTimeTx is accepted and
 // followed by a commit block) the staker set is also updated accordingly.
 // It must be that:
 //   * proposed timestamp > [current chain time]
 //   * proposed timestamp <= [time for next staker to be removed]
-type advanceTimeTx struct {
+type AdvanceTimeTx struct {
 	// Unix time this block proposes increasing the timestamp to
 	Time uint64 `serialize:"true"`
 
 	vm *VM
 }
 
-func (tx *advanceTimeTx) initialize(vm *VM) error {
+func (tx *AdvanceTimeTx) initialize(vm *VM) error {
 	tx.vm = vm
 	return nil
 }
 
 // Timestamp returns the time this block is proposing the chain should be set to
-func (tx *advanceTimeTx) Timestamp() time.Time { return time.Unix(int64(tx.Time), 0) }
+func (tx *AdvanceTimeTx) Timestamp() time.Time { return time.Unix(int64(tx.Time), 0) }
 
 // SyntacticVerify that this transaction is well formed
-func (tx *advanceTimeTx) SyntacticVerify() error {
+func (tx *AdvanceTimeTx) SyntacticVerify() error {
 	switch {
 	case tx == nil:
 		return errNilTx
@@ -47,7 +47,7 @@ func (tx *advanceTimeTx) SyntacticVerify() error {
 }
 
 // SemanticVerify this transaction is valid.
-func (tx *advanceTimeTx) SemanticVerify(db database.Database) (*versiondb.Database, *versiondb.Database, func(), func(), error) {
+func (tx *AdvanceTimeTx) SemanticVerify(db database.Database) (*versiondb.Database, *versiondb.Database, func(), func(), error) {
 	if err := tx.SyntacticVerify(); err != nil {
 		return nil, nil, nil, nil, err
 	}
@@ -169,14 +169,14 @@ func (tx *advanceTimeTx) SemanticVerify(db database.Database) (*versiondb.Databa
 
 // InitiallyPrefersCommit returns true if the proposed time isn't after the
 // current wall clock time.
-func (tx *advanceTimeTx) InitiallyPrefersCommit() bool {
+func (tx *AdvanceTimeTx) InitiallyPrefersCommit() bool {
 	return !tx.Timestamp().After(tx.vm.clock.Time())
 }
 
 // newAdvanceTimeTx creates a new tx that, if it is accepted and followed by a
 // Commit block, will set the chain's timestamp to [timestamp].
-func (vm *VM) newAdvanceTimeTx(timestamp time.Time) (*advanceTimeTx, error) {
-	tx := &advanceTimeTx{
+func (vm *VM) newAdvanceTimeTx(timestamp time.Time) (*AdvanceTimeTx, error) {
+	tx := &AdvanceTimeTx{
 		Time: uint64(timestamp.Unix()),
 	}
 	return tx, tx.initialize(vm)

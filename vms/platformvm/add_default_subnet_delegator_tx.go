@@ -16,7 +16,7 @@ import (
 	"github.com/ava-labs/gecko/utils/hashing"
 )
 
-// UnsignedAddDefaultSubnetDelegatorTx is an unsigned addDefaultSubnetDelegatorTx
+// UnsignedAddDefaultSubnetDelegatorTx is an unsigned AddDefaultSubnetDelegatorTx
 type UnsignedAddDefaultSubnetDelegatorTx struct {
 	vm *VM
 
@@ -50,13 +50,13 @@ func (tx *UnsignedAddDefaultSubnetDelegatorTx) UnsignedBytes() []byte {
 	return tx.unsignedBytes
 }
 
-// addDefaultSubnetDelegatorTx is a transaction that, if it is in a
+// AddDefaultSubnetDelegatorTx is a transaction that, if it is in a
 // ProposalBlock that is accepted and followed by a Commit block, adds a
 // delegator to the pending validator set of the default subnet. (That is, the
 // validator in the tx will have their weight increase at some point in the
 // future.) The transaction fee will be paid from the account who signed the
 // transaction.
-type addDefaultSubnetDelegatorTx struct {
+type AddDefaultSubnetDelegatorTx struct {
 	UnsignedAddDefaultSubnetDelegatorTx `serialize:"true"`
 
 	// Credentials that authorize the inputs to spend the corresponding outputs
@@ -64,7 +64,7 @@ type addDefaultSubnetDelegatorTx struct {
 }
 
 // initialize [tx]
-func (tx *addDefaultSubnetDelegatorTx) initialize(vm *VM) error {
+func (tx *AddDefaultSubnetDelegatorTx) initialize(vm *VM) error {
 	tx.vm = vm
 	var err error
 	tx.unsignedBytes, err = Codec.Marshal(interface{}(tx.UnsignedAddDefaultSubnetDelegatorTx))
@@ -73,18 +73,18 @@ func (tx *addDefaultSubnetDelegatorTx) initialize(vm *VM) error {
 	}
 	tx.bytes, err = Codec.Marshal(tx) // byte representation of the signed transaction
 	if err != nil {
-		return fmt.Errorf("couldn't marshal addDefaultSubnetDelegatorTx: %w", err)
+		return fmt.Errorf("couldn't marshal AddDefaultSubnetDelegatorTx: %w", err)
 	}
 	tx.id = ids.NewID(hashing.ComputeHash256Array(tx.bytes))
 	return nil
 }
 
-func (tx *addDefaultSubnetDelegatorTx) ID() ids.ID { return tx.id }
+func (tx *AddDefaultSubnetDelegatorTx) ID() ids.ID { return tx.id }
 
 // SyntacticVerify return nil iff [tx] is valid
 // If [tx] is valid, sets [tx.accountID]
 // TODO: Only do syntactic Verify once
-func (tx *addDefaultSubnetDelegatorTx) SyntacticVerify() error {
+func (tx *AddDefaultSubnetDelegatorTx) SyntacticVerify() error {
 	switch {
 	case tx == nil:
 		return errNilTx
@@ -114,7 +114,7 @@ func (tx *addDefaultSubnetDelegatorTx) SyntacticVerify() error {
 }
 
 // SemanticVerify this transaction is valid.
-func (tx *addDefaultSubnetDelegatorTx) SemanticVerify(db database.Database) (*versiondb.Database, *versiondb.Database, func(), func(), error) {
+func (tx *AddDefaultSubnetDelegatorTx) SemanticVerify(db database.Database) (*versiondb.Database, *versiondb.Database, func(), func(), error) {
 	if err := tx.SyntacticVerify(); err != nil {
 		return nil, nil, nil, nil, err
 	}
@@ -195,7 +195,7 @@ func (tx *addDefaultSubnetDelegatorTx) SemanticVerify(db database.Database) (*ve
 
 // InitiallyPrefersCommit returns true if the proposed validators start time is
 // after the current wall clock time,
-func (tx *addDefaultSubnetDelegatorTx) InitiallyPrefersCommit() bool {
+func (tx *AddDefaultSubnetDelegatorTx) InitiallyPrefersCommit() bool {
 	return tx.StartTime().After(tx.vm.clock.Time())
 }
 
@@ -209,11 +209,11 @@ func (vm *VM) newAddDefaultSubnetDelegatorTx(
 	destination ids.ShortID,
 	networkID uint32,
 	key *crypto.PrivateKeySECP256K1R,
-) (*addDefaultSubnetDelegatorTx, error) {
+) (*AddDefaultSubnetDelegatorTx, error) {
 	// Get UTXOs of sender
 	addr := key.PublicKey().Address()
 
-	tx := &addDefaultSubnetDelegatorTx{
+	tx := &AddDefaultSubnetDelegatorTx{
 		UnsignedAddDefaultSubnetDelegatorTx: UnsignedAddDefaultSubnetDelegatorTx{
 			DurationValidator: DurationValidator{
 				Validator: Validator{

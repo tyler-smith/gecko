@@ -50,8 +50,8 @@ func (h *EventHeap) Less(i, j int) bool {
 	case iTime.Unix() < jTime.Unix():
 		return true
 	case iTime == jTime:
-		_, iOk := iTx.(*addDefaultSubnetValidatorTx)
-		_, jOk := jTx.(*addDefaultSubnetValidatorTx)
+		_, iOk := iTx.(*AddDefaultSubnetValidatorTx)
+		_, jOk := jTx.(*AddDefaultSubnetValidatorTx)
 
 		if iOk != jOk {
 			return iOk == h.SortByStartTime

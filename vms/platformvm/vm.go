@@ -122,13 +122,13 @@ func init() {
 		Codec.RegisterType(&secp256k1fx.Credential{}),
 
 		Codec.RegisterType(&UnsignedAddDefaultSubnetValidatorTx{}),
-		Codec.RegisterType(&addDefaultSubnetValidatorTx{}),
+		Codec.RegisterType(&AddDefaultSubnetValidatorTx{}),
 
 		Codec.RegisterType(&UnsignedAddNonDefaultSubnetValidatorTx{}),
-		Codec.RegisterType(&addNonDefaultSubnetValidatorTx{}),
+		Codec.RegisterType(&AddNonDefaultSubnetValidatorTx{}),
 
 		Codec.RegisterType(&UnsignedAddDefaultSubnetDelegatorTx{}),
-		Codec.RegisterType(&addDefaultSubnetDelegatorTx{}),
+		Codec.RegisterType(&AddDefaultSubnetDelegatorTx{}),
 
 		Codec.RegisterType(&UnsignedCreateChainTx{}),
 		Codec.RegisterType(&CreateChainTx{}),
@@ -142,8 +142,8 @@ func init() {
 		Codec.RegisterType(&UnsignedExportTx{}),
 		Codec.RegisterType(&ExportTx{}),
 
-		Codec.RegisterType(&advanceTimeTx{}),
-		Codec.RegisterType(&rewardValidatorTx{}),
+		Codec.RegisterType(&AdvanceTimeTx{}),
+		Codec.RegisterType(&RewardValidatorTx{}),
 	)
 	if errs.Errored() {
 		panic(errs.Err)

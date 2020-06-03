@@ -13,7 +13,7 @@ import (
 
 func TestRewardValidatorTxSyntacticVerify(t *testing.T) {
 	type test struct {
-		tx        *rewardValidatorTx
+		tx        *RewardValidatorTx
 		shouldErr bool
 	}
 
@@ -32,14 +32,14 @@ func TestRewardValidatorTxSyntacticVerify(t *testing.T) {
 			shouldErr: true,
 		},
 		{
-			tx: &rewardValidatorTx{
+			tx: &RewardValidatorTx{
 				vm:   vm,
 				TxID: txID,
 			},
 			shouldErr: false,
 		},
 		{
-			tx: &rewardValidatorTx{
+			tx: &RewardValidatorTx{
 				vm:   vm,
 				TxID: ids.ID{},
 			},
@@ -66,13 +66,13 @@ func TestRewardValidatorTxSemanticVerify(t *testing.T) {
 		vm.Ctx.Lock.Unlock()
 	}()
 
-	var nextToRemove *addDefaultSubnetValidatorTx
+	var nextToRemove *AddDefaultSubnetValidatorTx
 	currentValidators, err := vm.getCurrentValidators(vm.DB, DefaultSubnetID)
 	if err != nil {
 		t.Fatal(err)
 	}
 	// ID of validator that should leave DS validator set next
-	nextToRemove = currentValidators.Peek().(*addDefaultSubnetValidatorTx)
+	nextToRemove = currentValidators.Peek().(*AddDefaultSubnetValidatorTx)
 
 	// Case 1: Chain timestamp is wrong
 	tx, err := vm.newRewardValidatorTx(nextToRemove.ID())

@@ -20,7 +20,7 @@ func TestAddDefaultSubnetDelegatorTxSyntacticVerify(t *testing.T) {
 	}()
 
 	// Case 1: tx is nil
-	var tx *addDefaultSubnetDelegatorTx
+	var tx *AddDefaultSubnetDelegatorTx
 	if err := tx.SyntacticVerify(); err == nil {
 		t.Fatal("should have errored because tx is nil")
 	}

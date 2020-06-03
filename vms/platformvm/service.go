@@ -450,7 +450,7 @@ func (service *Service) AddDefaultSubnetValidator(_ *http.Request, args *AddDefa
 	}
 
 	// Create the transaction
-	tx := addDefaultSubnetValidatorTx{UnsignedAddDefaultSubnetValidatorTx: UnsignedAddDefaultSubnetValidatorTx{
+	tx := AddDefaultSubnetValidatorTx{UnsignedAddDefaultSubnetValidatorTx: UnsignedAddDefaultSubnetValidatorTx{
 		DurationValidator: DurationValidator{
 			Validator: Validator{
 				NodeID: args.ID,
@@ -500,7 +500,7 @@ func (service *Service) AddDefaultSubnetDelegator(_ *http.Request, args *AddDefa
 	}
 
 	// Create the transaction
-	tx := addDefaultSubnetDelegatorTx{UnsignedAddDefaultSubnetDelegatorTx: UnsignedAddDefaultSubnetDelegatorTx{
+	tx := AddDefaultSubnetDelegatorTx{UnsignedAddDefaultSubnetDelegatorTx: UnsignedAddDefaultSubnetDelegatorTx{
 		DurationValidator: DurationValidator{
 			Validator: Validator{
 				NodeID: args.ID,
@@ -537,7 +537,7 @@ type AddNonDefaultSubnetValidatorArgs struct {
 // AddNonDefaultSubnetValidator adds a validator to a subnet other than the default subnet
 // Returns the unsigned transaction, which must be signed using Sign
 func (service *Service) AddNonDefaultSubnetValidator(_ *http.Request, args *AddNonDefaultSubnetValidatorArgs, response *CreateTxResponse) error {
-	tx := addNonDefaultSubnetValidatorTx{
+	tx := AddNonDefaultSubnetValidatorTx{
 		UnsignedAddNonDefaultSubnetValidatorTx: UnsignedAddNonDefaultSubnetValidatorTx{
 			SubnetValidator: SubnetValidator{
 				DurationValidator: DurationValidator{
@@ -717,11 +717,11 @@ func (service *Service) Sign(_ *http.Request, args *SignArgs, reply *SignRespons
 	}
 
 	switch tx := genTx.Tx.(type) {
-	case *addDefaultSubnetValidatorTx:
+	case *AddDefaultSubnetValidatorTx:
 		genTx.Tx, err = service.signAddDefaultSubnetValidatorTx(tx, key)
-	case *addDefaultSubnetDelegatorTx:
+	case *AddDefaultSubnetDelegatorTx:
 		genTx.Tx, err = service.signAddDefaultSubnetDelegatorTx(tx, key)
-	case *addNonDefaultSubnetValidatorTx:
+	case *AddNonDefaultSubnetValidatorTx:
 		genTx.Tx, err = service.signAddNonDefaultSubnetValidatorTx(tx, key)
 	case *CreateSubnetTx:
 		genTx.Tx, err = service.signCreateSubnetTx(tx, key)
@@ -741,7 +741,7 @@ func (service *Service) Sign(_ *http.Request, args *SignArgs, reply *SignRespons
 }
 
 // Sign [unsigned] with [key]
-func (service *Service) signAddDefaultSubnetValidatorTx(tx *addDefaultSubnetValidatorTx, key *crypto.PrivateKeySECP256K1R) (*addDefaultSubnetValidatorTx, error) {
+func (service *Service) signAddDefaultSubnetValidatorTx(tx *AddDefaultSubnetValidatorTx, key *crypto.PrivateKeySECP256K1R) (*AddDefaultSubnetValidatorTx, error) {
 	service.vm.Ctx.Log.Debug("signAddDefaultSubnetValidatorTx called")
 
 	// TODO: Should we check if tx is already signed?
@@ -764,7 +764,7 @@ func (service *Service) signAddDefaultSubnetValidatorTx(tx *addDefaultSubnetVali
 }
 
 // Sign [unsigned] with [key]
-func (service *Service) signAddDefaultSubnetDelegatorTx(tx *addDefaultSubnetDelegatorTx, key *crypto.PrivateKeySECP256K1R) (*addDefaultSubnetDelegatorTx, error) {
+func (service *Service) signAddDefaultSubnetDelegatorTx(tx *AddDefaultSubnetDelegatorTx, key *crypto.PrivateKeySECP256K1R) (*AddDefaultSubnetDelegatorTx, error) {
 	service.vm.Ctx.Log.Debug("signAddDefaultSubnetValidatorTx called")
 
 	// TODO: Should we check if tx is already signed?
@@ -832,13 +832,13 @@ func (service *Service) signExportTx(tx *ExportTx, key *crypto.PrivateKeySECP256
 	return tx, nil
 }
 
-// Signs an unsigned or partially signed addNonDefaultSubnetValidatorTx with [key]
+// Signs an unsigned or partially signed AddNonDefaultSubnetValidatorTx with [key]
 // If [key] is a control key for the subnet and there is an empty spot in tx.ControlSigs, signs there
 // If [key] is a control key for the subnet and there is no empty spot in tx.ControlSigs, signs as payer
 // If [key] is not a control key, sign as payer (account controlled by [key] pays the tx fee)
 // Sorts tx.ControlSigs before returning
 // Assumes each element of tx.ControlSigs is actually a signature, not just empty bytes
-func (service *Service) signAddNonDefaultSubnetValidatorTx(tx *addNonDefaultSubnetValidatorTx, key *crypto.PrivateKeySECP256K1R) (*addNonDefaultSubnetValidatorTx, error) {
+func (service *Service) signAddNonDefaultSubnetValidatorTx(tx *AddNonDefaultSubnetValidatorTx, key *crypto.PrivateKeySECP256K1R) (*AddNonDefaultSubnetValidatorTx, error) {
 	service.vm.Ctx.Log.Debug("signAddNonDefaultSubnetValidatorTx called")
 
 	// Compute the byte repr. of the unsigned tx and the signature of [key] over it

@@ -10,7 +10,7 @@ import (
 
 func TestAdvanceTimeTxSyntacticVerify(t *testing.T) {
 	// Case 1: Tx is nil
-	var tx *advanceTimeTx
+	var tx *AdvanceTimeTx
 	if err := tx.SyntacticVerify(); err == nil {
 		t.Fatal("should have failed verification because tx is nil")
 	}
@@ -23,7 +23,7 @@ func TestAdvanceTimeTxSyntacticVerify(t *testing.T) {
 		vm.Ctx.Lock.Unlock()
 	}()
 
-	tx = &advanceTimeTx{
+	tx = &AdvanceTimeTx{
 		Time: uint64(defaultGenesisTime.Add(Delta).Add(1 * time.Second).Unix()),
 		vm:   vm,
 	}
@@ -50,7 +50,7 @@ func TestAdvanceTimeTxTimestampTooEarly(t *testing.T) {
 		vm.Ctx.Lock.Unlock()
 	}()
 
-	tx := &advanceTimeTx{
+	tx := &AdvanceTimeTx{
 		Time: uint64(defaultGenesisTime.Unix()),
 		vm:   vm,
 	}
@@ -98,7 +98,7 @@ func TestAdvanceTimeTxTimestampTooLate(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	tx := &advanceTimeTx{
+	tx := &AdvanceTimeTx{
 		Time: uint64(pendingValidatorStartTime.Add(1 * time.Second).Unix()),
 		vm:   vm,
 	}
@@ -121,7 +121,7 @@ func TestAdvanceTimeTxTimestampTooLate(t *testing.T) {
 	vm.clock.Set(defaultValidateEndTime.Add(-10 * time.Second))
 
 	// Proposes advancing timestamp to 1 second after genesis validators stop validating
-	tx = &advanceTimeTx{
+	tx = &AdvanceTimeTx{
 		Time: uint64(defaultValidateEndTime.Add(1 * time.Second).Unix()),
 		vm:   vm,
 	}
@@ -175,7 +175,7 @@ func TestAdvanceTimeTxUpdateValidators(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	tx := &advanceTimeTx{
+	tx := &AdvanceTimeTx{
 		Time: uint64(pendingValidatorStartTime.Unix()),
 		vm:   vm,
 	}
@@ -262,7 +262,7 @@ func TestAdvanceTimeTxUnmarshal(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	var unmarshaledTx advanceTimeTx
+	var unmarshaledTx AdvanceTimeTx
 	err = Codec.Unmarshal(bytes, &unmarshaledTx)
 	if err != nil {
 		t.Fatal(err)

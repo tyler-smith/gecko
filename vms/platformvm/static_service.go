@@ -154,7 +154,7 @@ func (*StaticService) BuildGenesis(_ *http.Request, args *BuildGenesisArgs, repl
 			return errValidatorAddsNoValue
 		}
 
-		tx := &addDefaultSubnetValidatorTx{
+		tx := &AddDefaultSubnetValidatorTx{
 			UnsignedAddDefaultSubnetValidatorTx: UnsignedAddDefaultSubnetValidatorTx{
 				DurationValidator: DurationValidator{
 					Validator: Validator{

@@ -21,7 +21,7 @@ func TestAddNonDefaultSubnetValidatorTxSyntacticVerify(t *testing.T) {
 	}()
 
 	// Case 1: tx is nil
-	var tx *addNonDefaultSubnetValidatorTx
+	var tx *AddNonDefaultSubnetValidatorTx
 	if err := tx.SyntacticVerify(); err == nil {
 		t.Fatal("should have errored because tx is nil")
 	}
@@ -632,7 +632,7 @@ func TestAddNonDefaultSubnetValidatorMarshal(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	var unmarshaledTx addNonDefaultSubnetValidatorTx
+	var unmarshaledTx AddNonDefaultSubnetValidatorTx
 	if err := Codec.Unmarshal(txBytes, &unmarshaledTx); err != nil {
 		t.Fatal(err)
 	}

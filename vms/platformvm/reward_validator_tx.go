@@ -18,7 +18,7 @@ var (
 	errShouldBeDSValidator = errors.New("expected validator to be in the default subnet")
 )
 
-// rewardValidatorTx is a transaction that represents a proposal to remove a
+// RewardValidatorTx is a transaction that represents a proposal to remove a
 // validator that is currently validating from the validator set.
 //
 // If this transaction is accepted and the next block accepted is a *Commit
@@ -28,20 +28,20 @@ var (
 // If this transaction is accepted and the next block accepted is an *Abort
 // block, the validator is removed and the account that the validator specified
 // receives the staked $AVA but no reward.
-type rewardValidatorTx struct {
+type RewardValidatorTx struct {
 	// ID of the tx that created the delegator/validator being removed/rewarded
 	TxID ids.ID `serialize:"true"`
 
 	vm *VM
 }
 
-func (tx *rewardValidatorTx) initialize(vm *VM) error {
+func (tx *RewardValidatorTx) initialize(vm *VM) error {
 	tx.vm = vm
 	return nil
 }
 
 // SyntacticVerify that this transaction is well formed
-func (tx *rewardValidatorTx) SyntacticVerify() error {
+func (tx *RewardValidatorTx) SyntacticVerify() error {
 	switch {
 	case tx == nil:
 		return errNilTx
@@ -58,7 +58,7 @@ func (tx *rewardValidatorTx) SyntacticVerify() error {
 // The next validator to be removed must be the validator specified in this block.
 // The next validator to be removed must be have an end time equal to the current
 //   chain timestamp.
-func (tx *rewardValidatorTx) SemanticVerify(db database.Database) (*versiondb.Database, *versiondb.Database, func(), func(), error) {
+func (tx *RewardValidatorTx) SemanticVerify(db database.Database) (*versiondb.Database, *versiondb.Database, func(), func(), error) {
 	if err := tx.SyntacticVerify(); err != nil {
 		return nil, nil, nil, nil, err
 	}
@@ -110,7 +110,7 @@ func (tx *rewardValidatorTx) SemanticVerify(db database.Database) (*versiondb.Da
 	}
 
 	switch vdrTx := vdrTx.(type) {
-	case *addDefaultSubnetValidatorTx:
+	case *AddDefaultSubnetValidatorTx:
 		duration := vdrTx.Duration()
 		amount := vdrTx.Wght
 		reward := reward(duration, amount, InflationRate)
@@ -149,7 +149,7 @@ func (tx *rewardValidatorTx) SemanticVerify(db database.Database) (*versiondb.Da
 		if err := tx.vm.putAccount(onAbortDB, accountNoReward); err != nil {
 			return nil, nil, nil, nil, errDBPutAccount
 		}
-	case *addDefaultSubnetDelegatorTx:
+	case *AddDefaultSubnetDelegatorTx:
 		parentTx, err := currentEvents.getDefaultSubnetStaker(vdrTx.NodeID)
 		if err != nil {
 			return nil, nil, nil, nil, err
@@ -250,12 +250,12 @@ func (tx *rewardValidatorTx) SemanticVerify(db database.Database) (*versiondb.Da
 //
 // TODO: A validator should receive a reward only if they are sufficiently
 // responsive and correct during the time they are validating.
-func (tx *rewardValidatorTx) InitiallyPrefersCommit() bool { return true }
+func (tx *RewardValidatorTx) InitiallyPrefersCommit() bool { return true }
 
 // RewardStakerTx creates a new transaction that proposes to remove the staker
 // [validatorID] from the default validator set.
-func (vm *VM) newRewardValidatorTx(txID ids.ID) (*rewardValidatorTx, error) {
-	tx := &rewardValidatorTx{
+func (vm *VM) newRewardValidatorTx(txID ids.ID) (*RewardValidatorTx, error) {
+	tx := &RewardValidatorTx{
 		TxID: txID,
 	}
 	return tx, tx.initialize(vm)

@@ -26,7 +26,7 @@ var (
 	errTooManyShares  = fmt.Errorf("a staker can only require at most %d shares from delegators", NumberOfShares)
 )
 
-// UnsignedAddDefaultSubnetValidatorTx is an unsigned addDefaultSubnetValidatorTx
+// UnsignedAddDefaultSubnetValidatorTx is an unsigned AddDefaultSubnetValidatorTx
 type UnsignedAddDefaultSubnetValidatorTx struct {
 	vm *VM
 
@@ -64,10 +64,10 @@ func (tx *UnsignedAddDefaultSubnetValidatorTx) UnsignedBytes() []byte {
 	return tx.unsignedBytes
 }
 
-// addDefaultSubnetValidatorTx is a transaction that, if it is in a ProposeAddValidator block that
+// AddDefaultSubnetValidatorTx is a transaction that, if it is in a ProposeAddValidator block that
 // is accepted and followed by a Commit block, adds a validator to the pending validator set of the default subnet.
 // (That is, the validator in the tx will validate at some point in the future.)
-type addDefaultSubnetValidatorTx struct {
+type AddDefaultSubnetValidatorTx struct {
 	UnsignedAddDefaultSubnetValidatorTx `serialize:"true"`
 
 	// Credentials that authorize the inputs to spend the corresponding outputs
@@ -75,7 +75,7 @@ type addDefaultSubnetValidatorTx struct {
 }
 
 // initialize [tx]
-func (tx *addDefaultSubnetValidatorTx) initialize(vm *VM) error {
+func (tx *AddDefaultSubnetValidatorTx) initialize(vm *VM) error {
 	tx.vm = vm
 	var err error
 	tx.unsignedBytes, err = Codec.Marshal(interface{}(tx.UnsignedAddDefaultSubnetValidatorTx))
@@ -84,18 +84,18 @@ func (tx *addDefaultSubnetValidatorTx) initialize(vm *VM) error {
 	}
 	tx.bytes, err = Codec.Marshal(tx) // byte representation of the signed transaction
 	if err != nil {
-		return fmt.Errorf("couldn't marshal addDefaultSubnetValidatorTx: %w", err)
+		return fmt.Errorf("couldn't marshal AddDefaultSubnetValidatorTx: %w", err)
 	}
 	tx.id = ids.NewID(hashing.ComputeHash256Array(tx.bytes))
 	return err
 }
 
-func (tx *addDefaultSubnetValidatorTx) ID() ids.ID { return tx.id }
+func (tx *AddDefaultSubnetValidatorTx) ID() ids.ID { return tx.id }
 
 // SyntacticVerify that this transaction is well formed
 // If [tx] is valid, this method also populates [tx.accountID]
 // TODO: Only do syntactic Verify once
-func (tx *addDefaultSubnetValidatorTx) SyntacticVerify() error {
+func (tx *AddDefaultSubnetValidatorTx) SyntacticVerify() error {
 	switch {
 	case tx == nil:
 		return errNilTx
@@ -129,7 +129,7 @@ func (tx *addDefaultSubnetValidatorTx) SyntacticVerify() error {
 }
 
 // SemanticVerify this transaction is valid.
-func (tx *addDefaultSubnetValidatorTx) SemanticVerify(db database.Database) (*versiondb.Database, *versiondb.Database, func(), func(), error) {
+func (tx *AddDefaultSubnetValidatorTx) SemanticVerify(db database.Database) (*versiondb.Database, *versiondb.Database, func(), func(), error) {
 	if err := tx.SyntacticVerify(); err != nil {
 		return nil, nil, nil, nil, err
 	}
@@ -225,14 +225,14 @@ func (tx *addDefaultSubnetValidatorTx) SemanticVerify(db database.Database) (*ve
 
 // InitiallyPrefersCommit returns true if the proposed validators start time is
 // after the current wall clock time,
-func (tx *addDefaultSubnetValidatorTx) InitiallyPrefersCommit() bool {
+func (tx *AddDefaultSubnetValidatorTx) InitiallyPrefersCommit() bool {
 	return tx.StartTime().After(tx.vm.clock.Time())
 }
 
 // NewAddDefaultSubnetValidatorTx returns a new NewAddDefaultSubnetValidatorTx
 func (vm *VM) newAddDefaultSubnetValidatorTx(nonce, stakeAmt, startTime, endTime uint64, nodeID, destination ids.ShortID, shares, networkID uint32, key *crypto.PrivateKeySECP256K1R,
-) (*addDefaultSubnetValidatorTx, error) {
-	tx := &addDefaultSubnetValidatorTx{
+) (*AddDefaultSubnetValidatorTx, error) {
+	tx := &AddDefaultSubnetValidatorTx{
 		UnsignedAddDefaultSubnetValidatorTx: UnsignedAddDefaultSubnetValidatorTx{
 			NetworkID: networkID,
 			DurationValidator: DurationValidator{
