@@ -207,7 +207,7 @@ func (vm *VM) CreateHandlers() map[string]*common.HTTPHandler {
 	newServer.RegisterCodec(codec, "application/json;charset=UTF-8")
 	newServer.RegisterService(&Service{vm: vm}, "spchain") // Name the API service "spchain"
 	return map[string]*common.HTTPHandler{
-		"": &common.HTTPHandler{LockOptions: common.WriteLock, Handler: newServer},
+		"": {LockOptions: common.WriteLock, Handler: newServer},
 	}
 }
 
@@ -219,7 +219,7 @@ func (vm *VM) CreateStaticHandlers() map[string]*common.HTTPHandler {
 	newServer.RegisterCodec(codec, "application/json;charset=UTF-8")
 	newServer.RegisterService(&StaticService{}, "spchain") // Name the API service "spchain"
 	return map[string]*common.HTTPHandler{
-		"": &common.HTTPHandler{LockOptions: common.NoLock, Handler: newServer},
+		"": {LockOptions: common.NoLock, Handler: newServer},
 	}
 }
 

@@ -56,7 +56,7 @@ func TestTxInvalidCredential(t *testing.T) {
 		UnsignedTx: &BaseTx{
 			NetID: networkID,
 			BCID:  chainID,
-			Ins: []*ava.TransferableInput{&ava.TransferableInput{
+			Ins: []*ava.TransferableInput{{
 				UTXOID: ava.UTXOID{
 					TxID:        ids.Empty,
 					OutputIndex: 0,
@@ -95,7 +95,7 @@ func TestTxInvalidUnsignedTx(t *testing.T) {
 			NetID: networkID,
 			BCID:  chainID,
 			Ins: []*ava.TransferableInput{
-				&ava.TransferableInput{
+				{
 					UTXOID: ava.UTXOID{
 						TxID:        ids.Empty,
 						OutputIndex: 0,
@@ -110,7 +110,7 @@ func TestTxInvalidUnsignedTx(t *testing.T) {
 						},
 					},
 				},
-				&ava.TransferableInput{
+				{
 					UTXOID: ava.UTXOID{
 						TxID:        ids.Empty,
 						OutputIndex: 0,
@@ -153,7 +153,7 @@ func TestTxInvalidNumberOfCredentials(t *testing.T) {
 			NetID: networkID,
 			BCID:  chainID,
 			Ins: []*ava.TransferableInput{
-				&ava.TransferableInput{
+				{
 					UTXOID: ava.UTXOID{TxID: ids.Empty, OutputIndex: 0},
 					Asset:  ava.Asset{ID: asset},
 					In: &secp256k1fx.TransferInput{
@@ -165,7 +165,7 @@ func TestTxInvalidNumberOfCredentials(t *testing.T) {
 						},
 					},
 				},
-				&ava.TransferableInput{
+				{
 					UTXOID: ava.UTXOID{TxID: ids.Empty, OutputIndex: 1},
 					Asset:  ava.Asset{ID: asset},
 					In: &secp256k1fx.TransferInput{

@@ -38,7 +38,7 @@ func TestPrefixedSetsAndGets(t *testing.T) {
 	tx := &Tx{UnsignedTx: &BaseTx{
 		NetID: networkID,
 		BCID:  chainID,
-		Ins: []*ava.TransferableInput{&ava.TransferableInput{
+		Ins: []*ava.TransferableInput{{
 			UTXOID: ava.UTXOID{
 				TxID:        ids.Empty,
 				OutputIndex: 0,
@@ -161,7 +161,7 @@ func TestPrefixedFundingAddresses(t *testing.T) {
 		Asset: ava.Asset{ID: ids.Empty},
 		Out: &testAddressable{
 			Addrs: [][]byte{
-				[]byte{0},
+				{0},
 			},
 		},
 	}

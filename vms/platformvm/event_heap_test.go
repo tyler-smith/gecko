@@ -20,11 +20,11 @@ func TestTxHeapStart(t *testing.T) {
 	txHeap := EventHeap{SortByStartTime: true}
 
 	validator0, err := vm.newAddDefaultSubnetValidatorTx(
-		5,   // nonce
-		123, // stake amount
-		1,   // startTime
-		3,   // endTime
-		ids.NewShortID([20]byte{}),                    // node ID
+		5,                          // nonce
+		123,                        // stake amount
+		1,                          // startTime
+		3,                          // endTime
+		ids.NewShortID([20]byte{}), // node ID
 		ids.NewShortID([20]byte{1, 2, 3, 4, 5, 6, 7}), // destination
 		0,       // shares
 		0,       // network ID
@@ -35,11 +35,11 @@ func TestTxHeapStart(t *testing.T) {
 	}
 
 	validator1, err := vm.newAddDefaultSubnetValidatorTx(
-		5,   // nonce
-		123, // stake amount
-		1,   // startTime
-		3,   // endTime
-		ids.NewShortID([20]byte{1}),                   // node ID
+		5,                           // nonce
+		123,                         // stake amount
+		1,                           // startTime
+		3,                           // endTime
+		ids.NewShortID([20]byte{1}), // node ID
 		ids.NewShortID([20]byte{1, 2, 3, 4, 5, 6, 7}), // destination
 		0,       // shares
 		0,       // network ID
@@ -50,11 +50,11 @@ func TestTxHeapStart(t *testing.T) {
 	}
 
 	validator2, err := vm.newAddDefaultSubnetValidatorTx(
-		5,   // nonce
-		123, // stake amount
-		2,   // startTime
-		4,   // endTime
-		ids.NewShortID([20]byte{}),                    // node ID
+		5,                          // nonce
+		123,                        // stake amount
+		2,                          // startTime
+		4,                          // endTime
+		ids.NewShortID([20]byte{}), // node ID
 		ids.NewShortID([20]byte{1, 2, 3, 4, 5, 6, 7}), // destination
 		0,       // shares
 		0,       // network ID
@@ -93,11 +93,11 @@ func TestTxHeapStop(t *testing.T) {
 	txHeap := EventHeap{}
 
 	validator0, err := vm.newAddDefaultSubnetValidatorTx(
-		5,   // nonce
-		123, // stake amount
-		1,   // startTime
-		3,   // endTime
-		ids.NewShortID([20]byte{}),                    // node ID
+		5,                          // nonce
+		123,                        // stake amount
+		1,                          // startTime
+		3,                          // endTime
+		ids.NewShortID([20]byte{}), // node ID
 		ids.NewShortID([20]byte{1, 2, 3, 4, 5, 6, 7}), // destination
 		0,       // shares
 		0,       // network ID
@@ -108,11 +108,11 @@ func TestTxHeapStop(t *testing.T) {
 	}
 
 	validator1, err := vm.newAddDefaultSubnetValidatorTx(
-		5,   // nonce
-		123, // stake amount
-		1,   // startTime
-		3,   // endTime
-		ids.NewShortID([20]byte{1}),                   // node ID
+		5,                           // nonce
+		123,                         // stake amount
+		1,                           // startTime
+		3,                           // endTime
+		ids.NewShortID([20]byte{1}), // node ID
 		ids.NewShortID([20]byte{1, 2, 3, 4, 5, 6, 7}), // destination
 		0,       // shares
 		0,       // network ID
@@ -123,11 +123,11 @@ func TestTxHeapStop(t *testing.T) {
 	}
 
 	validator2, err := vm.newAddDefaultSubnetValidatorTx(
-		5,   // nonce
-		123, // stake amount
-		2,   // startTime
-		4,   // endTime
-		ids.NewShortID([20]byte{}),                    // node ID
+		5,                          // nonce
+		123,                        // stake amount
+		2,                          // startTime
+		4,                          // endTime
+		ids.NewShortID([20]byte{}), // node ID
 		ids.NewShortID([20]byte{1, 2, 3, 4, 5, 6, 7}), // destination
 		0,       // shares
 		0,       // network ID
@@ -166,11 +166,11 @@ func TestTxHeapStartValidatorVsDelegatorOrdering(t *testing.T) {
 	txHeap := EventHeap{SortByStartTime: true}
 
 	validator, err := vm.newAddDefaultSubnetValidatorTx(
-		5,   // nonce
-		123, // stake amount
-		1,   // startTime
-		3,   // endTime
-		ids.NewShortID([20]byte{}),                    // node ID
+		5,                          // nonce
+		123,                        // stake amount
+		1,                          // startTime
+		3,                          // endTime
+		ids.NewShortID([20]byte{}), // node ID
 		ids.NewShortID([20]byte{1, 2, 3, 4, 5, 6, 7}), // destination
 		0,       // shares
 		0,       // network ID
@@ -181,11 +181,11 @@ func TestTxHeapStartValidatorVsDelegatorOrdering(t *testing.T) {
 	}
 
 	delegator, err := vm.newAddDefaultSubnetDelegatorTx(
-		5,   // nonce
-		123, // stake amount
-		1,   // startTime
-		3,   // endTime
-		ids.NewShortID([20]byte{}),                    // node ID
+		5,                          // nonce
+		123,                        // stake amount
+		1,                          // startTime
+		3,                          // endTime
+		ids.NewShortID([20]byte{}), // node ID
 		ids.NewShortID([20]byte{1, 2, 3, 4, 5, 6, 7}), // destination
 		0,       // network ID
 		keys[0], // key
@@ -213,11 +213,11 @@ func TestTxHeapStopValidatorVsDelegatorOrdering(t *testing.T) {
 	txHeap := EventHeap{}
 
 	validator, err := vm.newAddDefaultSubnetValidatorTx(
-		5,   // nonce
-		123, // stake amount
-		1,   // startTime
-		3,   // endTime
-		ids.NewShortID([20]byte{}),                    // node ID
+		5,                          // nonce
+		123,                        // stake amount
+		1,                          // startTime
+		3,                          // endTime
+		ids.NewShortID([20]byte{}), // node ID
 		ids.NewShortID([20]byte{1, 2, 3, 4, 5, 6, 7}), // destination
 		0,       // shares
 		0,       // network ID
@@ -228,11 +228,11 @@ func TestTxHeapStopValidatorVsDelegatorOrdering(t *testing.T) {
 	}
 
 	delegator, err := vm.newAddDefaultSubnetDelegatorTx(
-		5,   // nonce
-		123, // stake amount
-		1,   // startTime
-		3,   // endTime
-		ids.NewShortID([20]byte{}),                    // node ID
+		5,                          // nonce
+		123,                        // stake amount
+		1,                          // startTime
+		3,                          // endTime
+		ids.NewShortID([20]byte{}), // node ID
 		ids.NewShortID([20]byte{1, 2, 3, 4, 5, 6, 7}), // destination
 		0,       // network ID
 		keys[0], // key

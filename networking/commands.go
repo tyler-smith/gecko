@@ -167,28 +167,28 @@ const (
 var (
 	Messages = map[salticidae.Opcode][]Field{
 		// Handshake:
-		GetVersion:  []Field{},
-		Version:     []Field{NetworkID, MyTime, IP, VersionStr},
-		GetPeerList: []Field{},
-		PeerList:    []Field{Peers},
+		GetVersion:  {},
+		Version:     {NetworkID, MyTime, IP, VersionStr},
+		GetPeerList: {},
+		PeerList:    {Peers},
 		// Bootstrapping:
-		GetAcceptedFrontier: []Field{ChainID, RequestID},
-		AcceptedFrontier:    []Field{ChainID, RequestID, ContainerIDs},
-		GetAccepted:         []Field{ChainID, RequestID, ContainerIDs},
-		Accepted:            []Field{ChainID, RequestID, ContainerIDs},
+		GetAcceptedFrontier: {ChainID, RequestID},
+		AcceptedFrontier:    {ChainID, RequestID, ContainerIDs},
+		GetAccepted:         {ChainID, RequestID, ContainerIDs},
+		Accepted:            {ChainID, RequestID, ContainerIDs},
 		// Consensus:
-		Get:       []Field{ChainID, RequestID, ContainerID},
-		Put:       []Field{ChainID, RequestID, ContainerID, ContainerBytes},
-		PushQuery: []Field{ChainID, RequestID, ContainerID, ContainerBytes},
-		PullQuery: []Field{ChainID, RequestID, ContainerID},
-		Chits:     []Field{ChainID, RequestID, ContainerIDs},
+		Get:       {ChainID, RequestID, ContainerID},
+		Put:       {ChainID, RequestID, ContainerID, ContainerBytes},
+		PushQuery: {ChainID, RequestID, ContainerID, ContainerBytes},
+		PullQuery: {ChainID, RequestID, ContainerID},
+		Chits:     {ChainID, RequestID, ContainerIDs},
 		// Pinging:
-		Ping: []Field{},
-		Pong: []Field{},
+		Ping: {},
+		Pong: {},
 		// Arbitrary data message:
-		Data: []Field{Bytes},
+		Data: {Bytes},
 		// Throughput test:
-		IssueTx:   []Field{ChainID, Tx},
-		DecidedTx: []Field{TxID, Status},
+		IssueTx:   {ChainID, Tx},
+		DecidedTx: {TxID, Status},
 	}
 )

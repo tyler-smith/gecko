@@ -298,7 +298,7 @@ func TestCreateFixedCapAsset(t *testing.T) {
 		Name:         "test asset",
 		Symbol:       "test",
 		Denomination: 1,
-		InitialHolders: []*Holder{&Holder{
+		InitialHolders: []*Holder{{
 			Amount:  123456789,
 			Address: vm.Format(keys[0].PublicKey().Address().Bytes()),
 		}},
@@ -324,7 +324,7 @@ func TestCreateVariableCapAsset(t *testing.T) {
 		Name:   "test asset",
 		Symbol: "test",
 		MinterSets: []Owners{
-			Owners{
+			{
 				Threshold: 1,
 				Minters: []string{
 					vm.Format(keys[0].PublicKey().Address().Bytes()),

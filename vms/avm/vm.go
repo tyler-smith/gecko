@@ -224,8 +224,8 @@ func (vm *VM) CreateHandlers() map[string]*common.HTTPHandler {
 	rpcServer.RegisterService(&Service{vm: vm}, "avm") // name this service "avm"
 
 	return map[string]*common.HTTPHandler{
-		"":        &common.HTTPHandler{Handler: rpcServer},
-		"/pubsub": &common.HTTPHandler{LockOptions: common.NoLock, Handler: vm.pubsub},
+		"":        {Handler: rpcServer},
+		"/pubsub": {LockOptions: common.NoLock, Handler: vm.pubsub},
 	}
 }
 
@@ -237,7 +237,7 @@ func (vm *VM) CreateStaticHandlers() map[string]*common.HTTPHandler {
 	newServer.RegisterCodec(codec, "application/json;charset=UTF-8")
 	newServer.RegisterService(&StaticService{}, "avm") // name this service "avm"
 	return map[string]*common.HTTPHandler{
-		"": &common.HTTPHandler{LockOptions: common.WriteLock, Handler: newServer},
+		"": {LockOptions: common.WriteLock, Handler: newServer},
 	}
 }
 
