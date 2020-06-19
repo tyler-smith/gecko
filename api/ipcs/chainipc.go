@@ -13,6 +13,7 @@ import (
 
 // ChainIPC a struct which holds IPC socket information
 type ChainIPC struct {
+	url    string
 	log    logging.Logger
 	socket mangos.Socket
 }

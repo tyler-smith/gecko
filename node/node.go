@@ -497,12 +497,16 @@ func (n *Node) initHealthAPI() {
 
 // initIPCAPI initializes the IPC API service
 // Assumes n.log and n.chainManager already initialized
-func (n *Node) initIPCAPI() {
+func (n *Node) initIPCAPI() error {
 	if n.Config.IPCEnabled {
 		n.Log.Info("initializing IPC API")
-		service := ipcs.NewService(n.Log, n.chainManager, n.DecisionDispatcher, &n.APIServer)
+		service, err := ipcs.NewService(n.Log, n.chainManager, n.DecisionDispatcher, n.Config.IPCDefaultChainIDs, &n.APIServer)
+		if err != nil {
+			return err
+		}
 		n.APIServer.AddRoute(service, &sync.RWMutex{}, "ipcs", "", n.HTTPLog)
 	}
+	return nil
 }
 
 // Give chains and VMs aliases as specified by the genesis information
@@ -579,10 +583,12 @@ func (n *Node) Initialize(Config *Config, logger logging.Logger, logFactory logg
 	n.initEventDispatcher() // Set up the event dipatcher
 	n.initChainManager()    // Set up the chain manager
 
-	n.initAdminAPI()  // Start the Admin API
-	n.initInfoAPI()   // Start the Info API
-	n.initHealthAPI() // Start the Health API
-	n.initIPCAPI()    // Start the IPC API
+	n.initAdminAPI()                       // Start the Admin API
+	n.initInfoAPI()                        // Start the Info API
+	n.initHealthAPI()                      // Start the Health API
+	if err := n.initIPCAPI(); err != nil { //  Start the IPC API
+		return err
+	}
 
 	if err := n.initAliases(); err != nil { // Set up aliases
 		return err

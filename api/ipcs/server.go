@@ -15,6 +15,7 @@ import (
 
 	"github.com/ava-labs/gecko/api"
 	"github.com/ava-labs/gecko/chains"
+	"github.com/ava-labs/gecko/ids"
 	"github.com/ava-labs/gecko/snow/engine/common"
 	"github.com/ava-labs/gecko/snow/triggers"
 	"github.com/ava-labs/gecko/utils/json"
@@ -34,19 +35,31 @@ type IPCs struct {
 }
 
 // NewService returns a new IPCs API service
-func NewService(log logging.Logger, chainManager chains.Manager, events *triggers.EventDispatcher, httpServer *api.Server) *common.HTTPHandler {
-	newServer := rpc.NewServer()
-	codec := json.NewCodec()
-	newServer.RegisterCodec(codec, "application/json")
-	newServer.RegisterCodec(codec, "application/json;charset=UTF-8")
-	newServer.RegisterService(&IPCs{
+func NewService(log logging.Logger, chainManager chains.Manager, events *triggers.EventDispatcher, defaultChainIDs []string, httpServer *api.Server) (*common.HTTPHandler, error) {
+	ipcs := &IPCs{
 		log:          log,
 		chainManager: chainManager,
 		httpServer:   httpServer,
 		events:       events,
 		chains:       map[[32]byte]*ChainIPC{},
-	}, "ipcs")
-	return &common.HTTPHandler{Handler: newServer}
+	}
+
+	for _, chainID := range defaultChainIDs {
+		id, err := ids.FromString(chainID)
+		if err != nil {
+			return nil, err
+		}
+		if _, err := ipcs.publish(id); err != nil {
+			return nil, err
+		}
+	}
+
+	newServer := rpc.NewServer()
+	codec := json.NewCodec()
+	newServer.RegisterCodec(codec, "application/json")
+	newServer.RegisterCodec(codec, "application/json;charset=UTF-8")
+	newServer.RegisterService(ipcs, "ipcs")
+	return &common.HTTPHandler{Handler: newServer}, nil
 }
 
 // PublishBlockchainArgs are the arguments for calling PublishBlockchain
@@ -67,41 +80,14 @@ func (ipc *IPCs) PublishBlockchain(r *http.Request, args *PublishBlockchainArgs,
 		ipc.log.Error("unknown blockchainID: %s", err)
 		return err
 	}
-
-	chainIDKey := chainID.Key()
-	chainIDStr := chainID.String()
-	url := baseURL + chainIDStr + ".ipc"
-
-	reply.URL = url
-
-	if _, ok := ipc.chains[chainIDKey]; ok {
-		ipc.log.Info("returning existing blockchainID %s", chainIDStr)
-		return nil
-	}
-
-	sock, err := pub.NewSocket()
+	cipc, err := ipc.publish(chainID)
 	if err != nil {
-		ipc.log.Error("can't get new pub socket: %s", err)
+		ipc.log.Error("couldn't publish blockchainID: %s", err)
 		return err
 	}
 
-	if err = sock.Listen(url); err != nil {
-		ipc.log.Error("can't listen on pub socket: %s", err)
-		sock.Close()
-		return err
-	}
+	reply.URL = cipc.url
 
-	chainIPC := &ChainIPC{
-		log:    ipc.log,
-		socket: sock,
-	}
-	if err := ipc.events.RegisterChain(chainID, "ipc", chainIPC); err != nil {
-		ipc.log.Error("couldn't register event: %s", err)
-		sock.Close()
-		return err
-	}
-
-	ipc.chains[chainIDKey] = chainIPC
 	return nil
 }
 
@@ -140,4 +126,42 @@ func (ipc *IPCs) UnpublishBlockchain(r *http.Request, args *UnpublishBlockchainA
 
 	reply.Success = true
 	return errs.Err
+}
+
+func (ipc *IPCs) publish(chainID ids.ID) (*ChainIPC, error) {
+	chainIDKey := chainID.Key()
+	chainIDStr := chainID.String()
+
+	url := baseURL + chainID.String() + ".ipc"
+
+	if cipc, ok := ipc.chains[chainIDKey]; ok {
+		ipc.log.Info("returning existing blockchainID %s", chainIDStr)
+		return cipc, nil
+	}
+
+	sock, err := pub.NewSocket()
+	if err != nil {
+		ipc.log.Error("can't get new pub socket: %s", err)
+		return nil, err
+	}
+
+	if err = sock.Listen(url); err != nil {
+		ipc.log.Error("can't listen on pub socket: %s", err)
+		sock.Close()
+		return nil, err
+	}
+
+	chainIPC := &ChainIPC{
+		url:    url,
+		log:    ipc.log,
+		socket: sock,
+	}
+	if err := ipc.events.RegisterChain(chainID, "ipc", chainIPC); err != nil {
+		ipc.log.Error("couldn't register event: %s", err)
+		sock.Close()
+		return nil, err
+	}
+
+	ipc.chains[chainIDKey] = chainIPC
+	return chainIPC, nil
 }
