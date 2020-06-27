@@ -64,3 +64,7 @@ func (b *BootstrapableTest) ForceAccepted(containerIDs ids.Set) error {
 	}
 	return nil
 }
+
+func (b *BootstrapableTest) PersistEvents(_ [][]byte) error {
+	return nil
+}

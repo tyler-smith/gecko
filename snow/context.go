@@ -52,6 +52,8 @@ type Context struct {
 	Keystore            Keystore
 	SharedMemory        SharedMemory
 	BCLookup            AliasLookup
+
+	RecoveryDir string
 }
 
 // DefaultContextTest ...

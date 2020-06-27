@@ -4,10 +4,15 @@
 package common
 
 import (
+	"bufio"
+	"encoding/hex"
 	stdmath "math"
+	"os"
+	"path"
 	"time"
 
 	"github.com/ava-labs/gecko/ids"
+	"github.com/ava-labs/gecko/utils/hashing"
 	"github.com/ava-labs/gecko/utils/math"
 )
 
@@ -44,6 +49,11 @@ type Bootstrapper struct {
 
 // Initialize implements the Engine interface.
 func (b *Bootstrapper) Initialize(config Config) {
+	if config.Context.RecoveryDir != "" {
+		b.InitializeFromFile(config)
+		return
+	}
+
 	b.Config = config
 
 	for _, vdr := range b.Beacons.List() {
@@ -53,6 +63,49 @@ func (b *Bootstrapper) Initialize(config Config) {
 	}
 
 	b.acceptedVotes = make(map[[32]byte]uint64)
+}
+
+func (b *Bootstrapper) InitializeFromFile(config Config) {
+	b.Config = config
+
+	filepath := path.Join(config.Context.RecoveryDir, config.Context.ChainID.String()+".txt")
+
+	b.Context.Log.Info("Bootstrapping from recovery file: %s", filepath)
+
+	file, err := os.Open(filepath)
+	if err != nil {
+		b.Context.Log.Fatal("Failed to open file: %s", err.Error())
+		return
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	containers := [][]byte{}
+	for scanner.Scan() {
+		bytes, err := hex.DecodeString(scanner.Text())
+		if err != nil {
+			b.Context.Log.Fatal("Failed to decode consensus object: %s", err.Error())
+			return
+		}
+		containers = append(containers, bytes)
+	}
+
+	if err = b.Bootstrapable.PersistEvents(containers); err != nil {
+		b.Context.Log.Fatal("Failed to persist consensus events: %s", err.Error())
+		return
+	}
+
+	if err := scanner.Err(); err != nil {
+		b.Context.Log.Fatal("Failed to scan recovery file: %s", err.Error())
+		return
+	}
+
+	tipSet := ids.Set{}
+	tipSet.Add(ids.NewID(hashing.ComputeHash256Array(containers[len(containers)-1])))
+	if err = b.Bootstrapable.ForceAccepted(tipSet); err != nil {
+		b.Context.Log.Fatal("Failed force accepted: %s", err.Error())
+		return
+	}
 }
 
 // Startup implements the Engine interface.

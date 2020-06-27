@@ -135,6 +135,8 @@ func (t *Transitive) Shutdown() error {
 // Context implements the Engine interface
 func (t *Transitive) Context() *snow.Context { return t.Config.Context }
 
+func (t *Transitive) Bootstrapper() *bootstrapper { return &t.bootstrapper }
+
 // Get implements the Engine interface
 func (t *Transitive) Get(vdr ids.ShortID, requestID uint32, blkID ids.ID) error {
 	blk, err := t.Config.VM.GetBlock(blkID)

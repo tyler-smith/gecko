@@ -116,6 +116,8 @@ type manager struct {
 
 	unblocked     bool
 	blockedChains []ChainParameters
+
+	recoveryDir string
 }
 
 // New returns a new Manager where:
@@ -140,6 +142,7 @@ func New(
 	server *api.Server,
 	keystore *keystore.Keystore,
 	sharedMemory *atomic.SharedMemory,
+	recoveryDir string,
 ) Manager {
 	timeoutManager := timeout.Manager{}
 	timeoutManager.Initialize(requestTimeout)
@@ -165,6 +168,7 @@ func New(
 		server:          server,
 		keystore:        keystore,
 		sharedMemory:    sharedMemory,
+		recoveryDir:     recoveryDir,
 	}
 	m.Initialize()
 	return m
@@ -227,6 +231,8 @@ func (m *manager) ForceCreateChain(chain ChainParameters) {
 		Keystore:            m.keystore.NewBlockchainKeyStore(chain.ID),
 		SharedMemory:        m.sharedMemory.NewBlockchainSharedMemory(chain.ID),
 		BCLookup:            m,
+
+		RecoveryDir: m.recoveryDir,
 	}
 
 	// Get a factory for the vm we want to use on our chain

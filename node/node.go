@@ -429,6 +429,7 @@ func (n *Node) initChainManager() {
 		&n.APIServer,
 		&n.keystoreServer,
 		&n.sharedMemory,
+		n.Config.RecoveryDir,
 	)
 
 	n.chainManager.AddRegistrant(&n.APIServer)

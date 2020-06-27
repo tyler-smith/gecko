@@ -19,4 +19,6 @@ type Bootstrapable interface {
 	// Force the provided containers to be accepted. Only returns fatal errors
 	// if they occur.
 	ForceAccepted(acceptedContainerIDs ids.Set) error
+
+	PersistEvents([][]byte) error
 }

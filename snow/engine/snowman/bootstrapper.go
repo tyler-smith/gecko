@@ -170,6 +170,16 @@ func (b *bootstrapper) MultiPut(vdr ids.ShortID, requestID uint32, blks [][]byte
 	return b.process(wantedBlk)
 }
 
+func (b *bootstrapper) PersistEvents(blks [][]byte) error {
+	for _, blkBytes := range blks {
+		if _, err := b.VM.ParseBlock(blkBytes); err != nil {
+			b.BootstrapConfig.Context.Log.Debug("Failed to parse block: %s", formatting.DumpBytes{Bytes: blkBytes})
+			return err
+		}
+	}
+	return nil
+}
+
 // GetAncestorsFailed is called when a GetAncestors message we sent fails
 func (b *bootstrapper) GetAncestorsFailed(vdr ids.ShortID, requestID uint32) error {
 	blkID, ok := b.outstandingRequests.Remove(vdr, requestID)

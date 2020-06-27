@@ -75,4 +75,8 @@ type Config struct {
 
 	// Router that is used to handle incoming consensus messages
 	ConsensusRouter router.Router
+
+	// RecoveryDir is the path to files container consensus events to bootstrap
+	// from
+	RecoveryDir string
 }

@@ -238,7 +238,11 @@ func init() {
 	throughputPort := fs.Uint("xput-server-port", 9652, "Port of the deprecated throughput test server")
 	fs.BoolVar(&Config.ThroughputServerEnabled, "xput-server-enabled", false, "If true, throughput test server is created")
 
+	recoveryDir := fs.String("recovery-dir", "", "Recover consensus data directory")
+
 	ferr := fs.Parse(os.Args[1:])
+
+	Config.RecoveryDir = *recoveryDir
 
 	if *version { // If --version used, print version and exit
 		networkID, err := genesis.NetworkID(defaultNetworkName)

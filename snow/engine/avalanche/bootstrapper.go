@@ -253,6 +253,16 @@ func (b *bootstrapper) MultiPut(vdr ids.ShortID, requestID uint32, vtxs [][]byte
 	return b.process(processVertices...)
 }
 
+func (b *bootstrapper) PersistEvents(vtxs [][]byte) error {
+	for _, vtxBytes := range vtxs {
+		if _, err := b.State.ParseVertex(vtxBytes); err != nil {
+			b.BootstrapConfig.Context.Log.Debug("Failed to parse vertex: %s", formatting.DumpBytes{Bytes: vtxBytes})
+			return err
+		}
+	}
+	return nil
+}
+
 // GetAncestorsFailed is called when a GetAncestors message we sent fails
 func (b *bootstrapper) GetAncestorsFailed(vdr ids.ShortID, requestID uint32) error {
 	vtxID, ok := b.outstandingRequests.Remove(vdr, requestID)
