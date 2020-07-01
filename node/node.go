@@ -500,7 +500,7 @@ func (n *Node) initHealthAPI() {
 func (n *Node) initIPCAPI() error {
 	if n.Config.IPCEnabled {
 		n.Log.Info("initializing IPC API")
-		service, err := ipcs.NewService(n.Log, n.chainManager, n.DecisionDispatcher, n.Config.IPCDefaultChainIDs, &n.APIServer)
+		service, err := ipcs.NewService(n.Log, n.chainManager, n.Config.NetworkID, n.ConsensusDispatcher, n.DecisionDispatcher, n.Config.IPCDefaultChainIDs, &n.APIServer)
 		if err != nil {
 			return err
 		}
