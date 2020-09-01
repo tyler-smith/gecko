@@ -4,11 +4,8 @@
 package ipcs
 
 import (
-	"go.nanomsg.org/mangos/v3/protocol/pub"
-
-	mangos "go.nanomsg.org/mangos/v3"
-
 	"github.com/ava-labs/gecko/ids"
+	"github.com/ava-labs/gecko/ipcs/pipe"
 	"github.com/ava-labs/gecko/snow/triggers"
 	"github.com/ava-labs/gecko/utils/formatting"
 	"github.com/ava-labs/gecko/utils/logging"
@@ -85,37 +82,34 @@ func (ipcs *EventSockets) DecisionsURL() string {
 type eventSocket struct {
 	url          string
 	log          logging.Logger
-	socket       mangos.Socket
+	socket       *pipe.Socket
 	unregisterFn func() error
 }
 
 // newEventIPCSocket creates a *eventSocket for the given chain and
 // EventDispatcher that writes to a local IPC socket
 func newEventIPCSocket(ctx context, chainID ids.ID, name string, events *triggers.EventDispatcher) (*eventSocket, error) {
-	sock, err := pub.NewSocket()
-	if err != nil {
-		return nil, err
-	}
-
 	ipcName := ipcIdentifierPrefix + "-" + name
-
 	eis := &eventSocket{
 		log:    ctx.log,
-		socket: sock,
+		socket: pipe.NewSocket(),
 		url:    ipcURL(ctx, chainID, name),
 		unregisterFn: func() error {
+			panic("unregister")
 			return events.DeregisterChain(chainID, ipcName)
 		},
 	}
 
-	if err = sock.Listen("ipc://" + eis.url); err != nil {
-		if err := sock.Close(); err != nil {
+	if err := eis.socket.Listen(eis.url); err != nil {
+		panic(err)
+		if err := eis.socket.Close(); err != nil {
 			return nil, err
 		}
 		return nil, err
 	}
 
 	if err := events.RegisterChain(chainID, ipcName, eis); err != nil {
+		panic(err)
 		if err := eis.stop(); err != nil {
 			return nil, err
 		}
@@ -129,6 +123,7 @@ func newEventIPCSocket(ctx context, chainID ids.ID, name string, events *trigger
 func (eis *eventSocket) Accept(_, _ ids.ID, container []byte) error {
 	err := eis.socket.Send(container)
 	if err != nil {
+		panic(err)
 		eis.log.Error("%s while trying to send:\n%s", err, formatting.DumpBytes{Bytes: container})
 	}
 	return err
@@ -137,6 +132,7 @@ func (eis *eventSocket) Accept(_, _ ids.ID, container []byte) error {
 // stop unregisters the event handler and closes the eventSocket
 func (eis *eventSocket) stop() error {
 	eis.log.Info("closing Chain IPC")
+	panic("closin IPC")
 
 	errs := wrappers.Errs{}
 	errs.Add(eis.unregisterFn(), eis.socket.Close())
